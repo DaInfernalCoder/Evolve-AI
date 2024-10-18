@@ -5,6 +5,7 @@ import Messages from "./Messages";
 import Controls from "./Controls";
 import StartCall from "./StartCall";
 import { ComponentRef, useRef } from "react";
+import { useJournalEntries } from "../../hooks/useJournalEntries";
 
 export default function ClientComponent({
   accessToken,
@@ -13,9 +14,15 @@ export default function ClientComponent({
 }) {
   const timeout = useRef<number | null>(null);
   const ref = useRef<ComponentRef<typeof Messages> | null>(null);
+  const { selectedEntry } = useJournalEntries();
 
   // optional: use configId from environment variable
   const configId = process.env["NEXT_PUBLIC_HUME_CONFIG_ID"];
+
+  // Prepare context from the selected journal entry
+  const journalContext = selectedEntry
+    ? `${selectedEntry.date.toISOString().split('T')[0]}: ${selectedEntry.title} - ${selectedEntry.content}`
+    : "";
 
   return (
     <div
@@ -26,6 +33,13 @@ export default function ClientComponent({
       <VoiceProvider
         auth={{ type: "accessToken", value: accessToken }}
         configId={configId}
+        sessionSettings={{
+          type: "session_settings",
+          context: {
+            text: journalContext,
+            type: "persistent",
+          },
+        }}
         onMessage={() => {
           if (timeout.current) {
             window.clearTimeout(timeout.current);

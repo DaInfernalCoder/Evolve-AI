@@ -1,28 +1,28 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { Button } from "@/components/ui/button"
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { MessageSquare, Phone, ChevronDown, Menu, Brain } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+} from "@/components/ui/dropdown-menu";
+import { MessageSquare, Phone, ChevronDown, Menu, Brain } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Homepage() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [dots, setDots] = useState([])
-  const router = useRouter()
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [dots, setDots] = useState([]);
+  const router = useRouter();
 
   const recentChats = [
     { title: "Dealing with anxiety", time: "2 hours ago" },
     { title: "Improving sleep habits", time: "1 day ago" },
     { title: "Managing work stress", time: "3 days ago" },
     { title: "Relationship advice", time: "1 week ago" },
-  ]
+  ];
 
   useEffect(() => {
     const newDots = Array.from({ length: 100 }, (_, i) => ({
@@ -30,18 +30,20 @@ export default function Homepage() {
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
       size: Math.random() * 8 + 2, // Increased size range
-      color: `rgba(${Math.floor(Math.random() * 100 + 100)}, ${Math.floor(Math.random() * 100 + 100)}, 255, ${Math.random() * 0.3 + 0.4})`, // Random blue shades with higher opacity
-    }))
-    setDots(newDots)
-  }, [])
+      color: `rgba(${Math.floor(Math.random() * 100 + 100)}, ${Math.floor(
+        Math.random() * 100 + 100
+      )}, 255, ${Math.random() * 0.3 + 0.4})`, // Random blue shades with higher opacity
+    }));
+    setDots(newDots);
+  }, []);
 
   const handleVoiceSessionClick = () => {
-    router.push('/voice-session')
-  }
+    router.push("/voice-session");
+  };
 
   const handleJournalingSessionClick = () => {
-    router.push('/journaling-session')
-  }
+    router.push("/journaling-session");
+  };
 
   return (
     <div className="relative flex h-screen bg-black text-white overflow-hidden">
@@ -93,9 +95,15 @@ export default function Homepage() {
       >
         <div className="p-4 pt-16">
           <nav>
-            <h2 className="text-sm font-semibold text-gray-400 mb-2">Your recent chats</h2>
+            <h2 className="text-sm font-semibold text-gray-400 mb-2">
+              Your recent chats
+            </h2>
             {recentChats.map((chat, index) => (
-              <Button key={index} variant="ghost" className="w-full justify-start text-left mb-1 text-gray-300 hover:text-white hover:bg-gray-800">
+              <Button
+                key={index}
+                variant="ghost"
+                className="w-full justify-start text-left mb-1 text-gray-300 hover:text-white hover:bg-gray-800"
+              >
                 <div>
                   <div className="font-medium">{chat.title}</div>
                   <div className="text-sm text-gray-500">{chat.time}</div>
@@ -110,7 +118,9 @@ export default function Homepage() {
       <div className="flex-1 flex flex-col z-10">
         {/* Main Area */}
         <main className="flex-1 p-6 flex flex-col items-center justify-center">
-          <h2 className="text-4xl font-bold mb-6 text-center">How are you feeling today, Sumit?</h2>
+          <h2 className="text-4xl font-bold mb-6 text-center">
+            How are you feeling today, Sumit?
+          </h2>
           <div className="w-full max-w-md space-y-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -119,11 +129,17 @@ export default function Homepage() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 bg-gray-800 text-white">
-                <DropdownMenuItem onSelect={handleJournalingSessionClick} className="hover:bg-gray-700">
+                <DropdownMenuItem
+                  onSelect={handleJournalingSessionClick}
+                  className="hover:bg-gray-700"
+                >
                   <MessageSquare className="mr-2 h-4 w-4" />
                   <span>Journaling Session</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onSelect={handleVoiceSessionClick} className="hover:bg-gray-700">
+                <DropdownMenuItem
+                  onSelect={handleVoiceSessionClick}
+                  className="hover:bg-gray-700"
+                >
                   <Phone className="mr-2 h-4 w-4" />
                   <span>Voice Session</span>
                 </DropdownMenuItem>
@@ -133,5 +149,5 @@ export default function Homepage() {
         </main>
       </div>
     </div>
-  )
+  );
 }

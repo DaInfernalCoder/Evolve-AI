@@ -13,11 +13,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { useJournalEntries } from "@/hooks/useJournalEntries";
 
 export default function JournalHomescreen() {
-  const { entries, addEntry } = useJournalEntries();
+  const { entries, addEntry, selectEntry, deleteEntry } = useJournalEntries();
   const [newEntry, setNewEntry] = React.useState({ title: "", content: "" });
   const [selectedEntry, setSelectedEntry] = React.useState(null);
 
@@ -29,6 +29,13 @@ export default function JournalHomescreen() {
       content: newEntry.content,
     });
     setNewEntry({ title: "", content: "" });
+  };
+
+  const handleDeleteEntry = (id: number) => {
+    deleteEntry(id);
+    if (selectedEntry && selectedEntry.id === id) {
+      setSelectedEntry(null);
+    }
   };
 
   return (
@@ -69,34 +76,46 @@ export default function JournalHomescreen() {
         <h2 className="text-2xl font-bold mb-4">Past Entries</h2>
         <ScrollArea className="h-[400px] rounded-md border border-gray-700 p-4">
           {entries.map((entry) => (
-            <Dialog key={entry.id}>
-              <DialogTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="w-full text-left mb-2 hover:bg-gray-100"
-                  onClick={() => setSelectedEntry(entry)}
-                >
-                  <div>
-                    <p className="font-bold">{entry.title}</p>
-                    <p className="text-sm text-gray-400">
-                      {format(entry.date, "MMMM d, yyyy")}
+            <div key={entry.id} className="flex items-center mb-2">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="flex-grow text-left hover:bg-gray-800 text-white"
+                    onClick={() => {
+                      setSelectedEntry(entry);
+                      selectEntry(entry);
+                    }}
+                  >
+                    <div>
+                      <p className="font-bold">{entry.title}</p>
+                      <p className="text-sm text-gray-400">
+                        {format(new Date(entry.date), "MMMM d, yyyy")}
+                      </p>
+                    </div>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-gray-900 text-white">
+                  <DialogHeader>
+                    <DialogTitle>{selectedEntry?.title}</DialogTitle>
+                  </DialogHeader>
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-400 mb-2">
+                      {selectedEntry &&
+                        format(new Date(selectedEntry.date), "MMMM d, yyyy")}
                     </p>
+                    <p>{selectedEntry?.content}</p>
                   </div>
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="bg-gray-900 text-white">
-                <DialogHeader>
-                  <DialogTitle>{selectedEntry?.title}</DialogTitle>
-                </DialogHeader>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-400 mb-2">
-                    {selectedEntry &&
-                      format(selectedEntry.date, "MMMM d, yyyy")}
-                  </p>
-                  <p>{selectedEntry?.content}</p>
-                </div>
-              </DialogContent>
-            </Dialog>
+                </DialogContent>
+              </Dialog>
+              <Button
+                variant="ghost"
+                className="ml-2 text-red-500 hover:text-red-700 hover:bg-gray-800"
+                onClick={() => handleDeleteEntry(entry.id)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
           ))}
         </ScrollArea>
       </div>
