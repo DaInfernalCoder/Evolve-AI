@@ -4,7 +4,7 @@ import { VoiceProvider } from "@humeai/voice-react";
 import Messages from "./Messages";
 import Controls from "./Controls";
 import StartCall from "./StartCall";
-import { ComponentRef, useRef } from "react";
+import { ComponentRef, useRef, useState } from "react";
 import { useJournalEntries } from "../../hooks/useJournalEntries";
 
 export default function ClientComponent({
@@ -14,15 +14,14 @@ export default function ClientComponent({
 }) {
   const timeout = useRef<number | null>(null);
   const ref = useRef<ComponentRef<typeof Messages> | null>(null);
-  const { selectedEntry } = useJournalEntries();
+  const { selectedEntry, generateAIContext } = useJournalEntries();
+  const [isViewingPreviousEntry, setIsViewingPreviousEntry] = useState(false);
 
   // optional: use configId from environment variable
   const configId = process.env["NEXT_PUBLIC_HUME_CONFIG_ID"];
 
-  // Prepare context from the selected journal entry
-  const journalContext = selectedEntry
-    ? `${selectedEntry.date.toISOString().split('T')[0]}: ${selectedEntry.title} - ${selectedEntry.content}`
-    : "";
+  // Generate context from the selected journal entry
+  const journalContext = selectedEntry && !isViewingPreviousEntry ? generateAIContext(selectedEntry) : "";
 
   return (
     <div
@@ -35,10 +34,12 @@ export default function ClientComponent({
         configId={configId}
         sessionSettings={{
           type: "session_settings",
-          context: {
-            text: journalContext,
-            type: "persistent",
-          },
+          context: selectedEntry && !isViewingPreviousEntry
+            ? {
+                text: journalContext,
+                type: "persistent",
+              }
+            : undefined,
         }}
         onMessage={() => {
           if (timeout.current) {
