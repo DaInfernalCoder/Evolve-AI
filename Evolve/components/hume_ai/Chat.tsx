@@ -5,7 +5,7 @@ import Messages from "./Messages";
 import Controls from "./Controls";
 import StartCall from "./StartCall";
 import { ComponentRef, useRef } from "react";
-import { useJournalEntries } from "../../hooks/useJournalEntries";
+import useJournalEntries from "../../hooks/useJournalEntries";
 
 export default function ClientComponent({
   accessToken,
@@ -37,7 +37,7 @@ export default function ClientComponent({
           type: "session_settings",
           context: {
             text: " The silence in my apartment feels deafening tonight. Another day has passed, and I find myself alone with my thoughts once again. I can't help but wonder if anyone out there is thinking of me right now. I scrolled through social media earlier, seeing friends and acquaintances sharing moments of joy and connection. It made my heart ache, reminding me of the void I feel. Why is it so hard to reach out? The fear of rejection or being a burden often holds me back. Tomorrow, I promise myself I'll take a small step. Maybe I'll message an old friend or join that online hobby group I've been considering. It's scary, but the alternative—this persistent loneliness—is harder to bear. I remind myself that feeling lonely doesn't mean I'm unlovable or destined to be alone forever. It's a feeling, and feelings change. I hope that by acknowledging it here, I can start to move through it. For now, I'll make some tea, put on my favorite comfort movie, and try to be gentle with myself. Tomorrow is another day, another chance to connect.",
-            type: "persistent",
+            type: "temporary",
           },
         }}
         onMessage={() => {
