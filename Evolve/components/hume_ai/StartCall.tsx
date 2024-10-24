@@ -3,11 +3,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "../ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { PersonStanding } from "lucide-react";
-import { useJournalEntries } from "../../hooks/useJournalEntries";
+import { useState } from "react";
 
 export default function StartCall() {
   const { status, connect } = useVoice();
-  const { entries, selectedEntry, selectEntry } = useJournalEntries();
+  const [selectedEntry, setSelectedEntry] = useState(null);
+  const [entries] = useState([]);
 
   return (
     <AnimatePresence>
@@ -33,7 +34,7 @@ export default function StartCall() {
               }}
             >
               <Select
-                onValueChange={(value) => selectEntry(entries.find(entry => entry.id.toString() === value) || null)}
+                onValueChange={(value) => setSelectedEntry(entries.find(entry => entry.id.toString() === value) || null)}
                 value={selectedEntry?.id.toString() || ""}
               >
                 <SelectTrigger className="w-[300px] bg-white text-gray-900">

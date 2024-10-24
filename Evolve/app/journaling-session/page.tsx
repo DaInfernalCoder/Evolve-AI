@@ -21,26 +21,45 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus, Trash2 } from "lucide-react";
-import { useJournalEntries } from "@/hooks/useJournalEntries";
+import { useJournalEntries, JournalEntry } from "@/hooks/useJournalEntries";
 
 const moods = [
   "Excited", "Happy", "Content", "Neutral", "Anxious",
   "Sad", "Angry", "Frustrated", "Tired", "Energetic"
-];
+] as const;
+
+// eslint-disable-next-line no-unused-vars
+type Mood = typeof moods[number];
+
+interface NewEntryForm {
+  title: string;
+  content: string;
+  mood: string;
+}
 
 export default function JournalHomescreen() {
-  const { entries, addEntry, selectEntry, deleteEntry, generateAIContext } = useJournalEntries();
-  const [newEntry, setNewEntry] = React.useState({ title: "", content: "", mood: "" });
-  const [selectedEntry, setSelectedEntry] = React.useState(null);
+  const { entries, addEntry, deleteEntry } = useJournalEntries();
+  const [newEntry, setNewEntry] = React.useState<NewEntryForm>({ 
+    title: "", 
+    content: "", 
+    mood: "" 
+  });
+  const [selectedEntry, setSelectedEntry] = React.useState<JournalEntry | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
   const handleNewEntrySubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addEntry({
+    if (!newEntry.title || !newEntry.content || !newEntry.mood) return;
+
+    const entry: JournalEntry = {
+      id: Date.now(),
       date: new Date(),
       title: newEntry.title,
       content: newEntry.content,
       mood: newEntry.mood,
-    });
+    };
+
+    addEntry(entry);
     setNewEntry({ title: "", content: "", mood: "" });
   };
 
@@ -48,7 +67,14 @@ export default function JournalHomescreen() {
     deleteEntry(id);
     if (selectedEntry && selectedEntry.id === id) {
       setSelectedEntry(null);
+      setIsDialogOpen(false);
     }
+  };
+
+  const generateAIContext = (entry: JournalEntry): string => {
+    const moodAnalysis = `Your mood was ${entry.mood.toLowerCase()} during this entry.`;
+    const dateContext = `Written on ${format(entry.date, "MMMM d, yyyy")}`;
+    return `${dateContext}. ${moodAnalysis}`;
   };
 
   return (
@@ -96,6 +122,7 @@ export default function JournalHomescreen() {
           <Button
             type="submit"
             className="w-full bg-white text-black hover:bg-gray-200"
+            disabled={!newEntry.title || !newEntry.content || !newEntry.mood}
           >
             <Plus className="mr-2 h-4 w-4" /> Add New Entry
           </Button>
@@ -105,15 +132,12 @@ export default function JournalHomescreen() {
         <ScrollArea className="h-[400px] rounded-md border border-gray-700 p-4">
           {entries.map((entry) => (
             <div key={entry.id} className="flex items-center mb-2">
-              <Dialog>
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
                   <Button
                     variant="ghost"
                     className="flex-grow text-left hover:bg-gray-800 text-white"
-                    onClick={() => {
-                      setSelectedEntry(entry);
-                      selectEntry(entry);
-                    }}
+                    onClick={() => setSelectedEntry(entry)}
                   >
                     <div>
                       <p className="font-bold">{entry.title}</p>
@@ -125,23 +149,20 @@ export default function JournalHomescreen() {
                 </DialogTrigger>
                 <DialogContent className="bg-gray-900 text-white">
                   <DialogHeader>
-                    <DialogTitle>{selectedEntry?.title}</DialogTitle>
+                    <DialogTitle>{entry.title}</DialogTitle>
                   </DialogHeader>
                   <div className="mt-2">
                     <p className="text-sm text-gray-400 mb-2">
-                      {selectedEntry &&
-                        format(new Date(selectedEntry.date), "MMMM d, yyyy")}
+                      {format(new Date(entry.date), "MMMM d, yyyy")}
                     </p>
                     <p className="text-sm text-gray-400 mb-2">
-                      Mood: {selectedEntry?.mood}
+                      Mood: {entry.mood}
                     </p>
-                    <p>{selectedEntry?.content}</p>
-                    {selectedEntry && (
-                      <div className="mt-4 p-2 bg-gray-800 rounded">
-                        <p className="text-sm font-bold">AI Context:</p>
-                        <p className="text-sm">{generateAIContext(selectedEntry)}</p>
-                      </div>
-                    )}
+                    <p>{entry.content}</p>
+                    <div className="mt-4 p-2 bg-gray-800 rounded">
+                      <p className="text-sm font-bold">AI Context:</p>
+                      <p className="text-sm">{generateAIContext(entry)}</p>
+                    </div>
                   </div>
                 </DialogContent>
               </Dialog>
