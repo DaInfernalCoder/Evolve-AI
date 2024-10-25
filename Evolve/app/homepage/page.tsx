@@ -46,7 +46,7 @@ export default function Homepage() {
   };
 
   return (
-    <div className="relative flex h-screen bg-black text-white overflow-hidden">
+    <div className="relative flex h-screen bg-background text-foreground overflow-hidden">
       {/* Animated Dots */}
       {dots.map((dot) => (
         <motion.div
@@ -75,38 +75,38 @@ export default function Homepage() {
         <Button
           variant="ghost"
           size="icon"
-          className="text-white"
+          className="text-foreground"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         >
           <Menu className="h-6 w-6" />
         </Button>
         <div className="flex items-center space-x-2">
-          <Brain className="h-8 w-8 text-white" />
-          <h1 className="text-xl font-bold text-white">Evolve</h1>
+          <Brain className="h-8 w-8 text-foreground" />
+          <h1 className="text-xl font-bold text-foreground">Evolve</h1>
         </div>
       </div>
 
       {/* Left Sidebar */}
       <motion.div
-        className="fixed left-0 top-0 h-full w-64 bg-gray-900 border-r border-gray-800 z-40"
+        className="fixed left-0 top-0 h-full w-64 bg-card border-r border-border z-40"
         initial={{ x: -256 }}
         animate={{ x: isSidebarOpen ? 0 : -256 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
       >
         <div className="p-4 pt-16">
           <nav>
-            <h2 className="text-sm font-semibold text-gray-400 mb-2">
+            <h2 className="text-sm font-semibold text-muted-foreground mb-2">
               Your recent chats
             </h2>
             {recentChats.map((chat, index) => (
               <Button
                 key={index}
                 variant="ghost"
-                className="w-full justify-start text-left mb-1 text-gray-300 hover:text-white hover:bg-gray-800"
+                className="w-full justify-start text-left mb-1 text-foreground hover:text-foreground hover:bg-muted"
               >
                 <div>
                   <div className="font-medium">{chat.title}</div>
-                  <div className="text-sm text-gray-500">{chat.time}</div>
+                  <div className="text-sm text-muted-foreground">{chat.time}</div>
                 </div>
               </Button>
             ))}
@@ -124,21 +124,21 @@ export default function Homepage() {
           <div className="w-full max-w-md space-y-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button className="w-full text-lg h-12 bg-blue-600 hover:bg-blue-700 text-white">
+                <Button className="w-full text-lg h-12 bg-primary text-primary-foreground hover:bg-primary/90">
                   Start Your Journey <ChevronDown className="ml-2 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 bg-gray-800 text-white">
+              <DropdownMenuContent className="w-56 bg-card text-foreground">
                 <DropdownMenuItem
                   onSelect={handleJournalingSessionClick}
-                  className="hover:bg-gray-700"
+                  className="hover:bg-muted"
                 >
                   <MessageSquare className="mr-2 h-4 w-4" />
                   <span>Journaling Session</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onSelect={handleVoiceSessionClick}
-                  className="hover:bg-gray-700"
+                  className="hover:bg-muted"
                 >
                   <Phone className="mr-2 h-4 w-4" />
                   <span>Voice Session</span>
