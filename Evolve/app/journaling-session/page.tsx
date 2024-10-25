@@ -78,7 +78,7 @@ export default function JournalHomescreen() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans p-6">
+    <div className="min-h-screen bg-background text-foreground font-sans p-6">
       <header className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-2">Journaling Therapy</h1>
         <p className="text-xl">{format(new Date(), "MMMM d, yyyy")}</p>
@@ -93,13 +93,13 @@ export default function JournalHomescreen() {
             onChange={(e) =>
               setNewEntry({ ...newEntry, title: e.target.value })
             }
-            className="mb-4 bg-gray-900 border-gray-700 text-white"
+            className="mb-4 bg-card border-input text-foreground"
           />
           <Select
             value={newEntry.mood}
             onValueChange={(value) => setNewEntry({ ...newEntry, mood: value })}
           >
-            <SelectTrigger className="mb-4 bg-gray-900 border-gray-700 text-white">
+            <SelectTrigger className="mb-4 bg-card border-input text-foreground">
               <SelectValue placeholder="Select your mood" />
             </SelectTrigger>
             <SelectContent>
@@ -116,12 +116,12 @@ export default function JournalHomescreen() {
             onChange={(e) =>
               setNewEntry({ ...newEntry, content: e.target.value })
             }
-            className="mb-4 bg-gray-900 border-gray-700 text-white"
+            className="mb-4 bg-card border-input text-foreground"
             rows={4}
           />
           <Button
             type="submit"
-            className="w-full bg-white text-black hover:bg-gray-200"
+            className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
             disabled={!newEntry.title || !newEntry.content || !newEntry.mood}
           >
             <Plus className="mr-2 h-4 w-4" /> Add New Entry
@@ -129,37 +129,37 @@ export default function JournalHomescreen() {
         </form>
 
         <h2 className="text-2xl font-bold mb-4">Past Entries</h2>
-        <ScrollArea className="h-[400px] rounded-md border border-gray-700 p-4">
+        <ScrollArea className="h-[400px] rounded-md border border-input p-4">
           {entries.map((entry) => (
             <div key={entry.id} className="flex items-center mb-2">
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="flex-grow text-left hover:bg-gray-800 text-white"
+                    className="flex-grow text-left hover:bg-muted text-foreground"
                     onClick={() => setSelectedEntry(entry)}
                   >
                     <div>
                       <p className="font-bold">{entry.title}</p>
-                      <p className="text-sm text-gray-400">
+                      <p className="text-sm text-muted-foreground">
                         {format(new Date(entry.date), "MMMM d, yyyy")} - Mood: {entry.mood}
                       </p>
                     </div>
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-gray-900 text-white">
+                <DialogContent className="bg-card text-foreground">
                   <DialogHeader>
                     <DialogTitle>{entry.title}</DialogTitle>
                   </DialogHeader>
                   <div className="mt-2">
-                    <p className="text-sm text-gray-400 mb-2">
+                    <p className="text-sm text-muted-foreground mb-2">
                       {format(new Date(entry.date), "MMMM d, yyyy")}
                     </p>
-                    <p className="text-sm text-gray-400 mb-2">
+                    <p className="text-sm text-muted-foreground mb-2">
                       Mood: {entry.mood}
                     </p>
                     <p>{entry.content}</p>
-                    <div className="mt-4 p-2 bg-gray-800 rounded">
+                    <div className="mt-4 p-2 bg-muted rounded">
                       <p className="text-sm font-bold">AI Context:</p>
                       <p className="text-sm">{generateAIContext(entry)}</p>
                     </div>
@@ -168,7 +168,7 @@ export default function JournalHomescreen() {
               </Dialog>
               <Button
                 variant="ghost"
-                className="ml-2 text-red-500 hover:text-red-700 hover:bg-gray-800"
+                className="ml-2 text-destructive hover:text-destructive-foreground hover:bg-muted"
                 onClick={() => handleDeleteEntry(entry.id)}
               >
                 <Trash2 className="h-4 w-4" />
