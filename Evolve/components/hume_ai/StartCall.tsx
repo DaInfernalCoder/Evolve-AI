@@ -4,11 +4,12 @@ import { Button } from "../ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { PersonStanding } from "lucide-react";
 import { useState } from "react";
+import { useJournalEntries } from "@/hooks/useJournalEntries";
 
 export default function StartCall() {
   const { status, connect } = useVoice();
   const [selectedEntry, setSelectedEntry] = useState(null);
-  const [entries] = useState([]);
+  const { entries } = useJournalEntries();
 
   return (
     <AnimatePresence>
